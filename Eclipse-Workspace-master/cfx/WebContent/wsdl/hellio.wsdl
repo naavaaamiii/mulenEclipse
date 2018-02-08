@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="hellioService" targetNamespace="http://hi/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://hi/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+  <import namespace="http://hi/" schemaLocation="hellio_schema1.xsd"/>
+</schema>
+  </wsdl:types>
+  <wsdl:message name="hiResponse">
+    <wsdl:part name="parameters" element="tns:hiResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="hi">
+    <wsdl:part name="parameters" element="tns:hi">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="hellio">
+    <wsdl:operation name="hi">
+      <wsdl:input name="hi" message="tns:hi">
+    </wsdl:input>
+      <wsdl:output name="hiResponse" message="tns:hiResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="hellioServiceSoapBinding" type="tns:hellio">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="hi">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="hi">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="hiResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="hellioService">
+    <wsdl:port name="hellioPort" binding="tns:hellioServiceSoapBinding">
+      <soap:address location="http://localhost:8010/cfx/services/hellioPort"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

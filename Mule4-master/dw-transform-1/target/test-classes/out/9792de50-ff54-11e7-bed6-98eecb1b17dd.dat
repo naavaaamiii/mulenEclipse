@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='windows-1252'?>
+<Employee>
+  <FirstName>Rocky</FirstName>
+  <LastName>Sendo</LastName>
+  <Age>21</Age>
+  <Designation>Engineer</Designation>
+</Employee>

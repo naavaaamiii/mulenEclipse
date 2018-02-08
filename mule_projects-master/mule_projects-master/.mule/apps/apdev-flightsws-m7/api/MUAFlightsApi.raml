@@ -1,0 +1,39 @@
+#%RAML 1.0
+title: MUAFlightsApi
+version: 1.0
+/flights:
+ get:
+  queryParameters: 
+    code:
+  responses:
+      200:
+       body:
+        application/json:
+         example: |
+          {
+            "flight_id":"m1043073", "flight_name":"shubham","flight_location":"japan"
+            }
+        
+          
+
+ post:
+  body:
+   application/json:
+     example: |
+       { "flight_id":"m1041087", "flight_name":"abhinav","flight_location":"china"}
+  responses: 
+    201:
+     body:
+      application/json:
+       example: |
+         {"message": "flight added but not really "}
+
+/{ID}:
+ get:
+  responses: 
+    200:
+     body:
+      application/json:
+       example: |
+         {"flight_id":"m1043093", "flight_name":"","flight_location":"germany"}
+

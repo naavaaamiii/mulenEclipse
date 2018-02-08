@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="ISubtractImplService" targetNamespace="http://webservice.rocky.gdg.om/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://webservice.rocky.gdg.om/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+<schema xmlns="http://www.w3.org/2001/XMLSchema">
+  <import namespace="http://webservice.rocky.gdg.om/" schemaLocation="isubtractimpl_schema1.xsd"/>
+</schema>
+  </wsdl:types>
+  <wsdl:message name="subtract">
+    <wsdl:part name="parameters" element="tns:subtract">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="subtractResponse">
+    <wsdl:part name="parameters" element="tns:subtractResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="ISubtraction">
+    <wsdl:operation name="subtract">
+      <wsdl:input name="subtract" message="tns:subtract">
+    </wsdl:input>
+      <wsdl:output name="subtractResponse" message="tns:subtractResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ISubtractImplServiceSoapBinding" type="tns:ISubtraction">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="subtract">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="subtract">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="subtractResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ISubtractImplService">
+    <wsdl:port name="ISubtractImplPort" binding="tns:ISubtractImplServiceSoapBinding">
+      <soap:address location="http://localhost:9090/ISubtractImplPort"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,16 @@
+
+
+REST PRINCIPLES
+
+uniform interfaace
+client/server separation 
+stateless
+cacheable
+layered
+WIDELY USED 
+simplicity
+agility : loose coupling cn result to evoving fast .
+
+What is meant by RESTful web services?
+Representational state transfer (REST) or RESTful web services are a way of providing interoperability between computer systems on the Internet. ... In a RESTful Web service, requests made to a resource's URI will elicit a response that may be in XML, HTML, JSON or some other defined format.
+

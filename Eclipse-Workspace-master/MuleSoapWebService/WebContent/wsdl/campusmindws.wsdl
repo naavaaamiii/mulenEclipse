@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="CampusMindWSService" targetNamespace="http://controller/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://controller/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xs:schema elementFormDefault="unqualified" targetNamespace="http://controller/" version="1.0" xmlns:tns="http://controller/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="findAllCampusMind" type="tns:findAllCampusMind"/>
+
+  <xs:element name="findAllCampusMindResponse" type="tns:findAllCampusMindResponse"/>
+
+  <xs:element name="getCampusMind" type="tns:getCampusMind"/>
+
+  <xs:element name="getCampusMindResponse" type="tns:getCampusMindResponse"/>
+
+  <xs:complexType name="findAllCampusMind">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="findAllCampusMindResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:campusMind"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="campusMind">
+    <xs:sequence>
+      <xs:element name="id" type="xs:int"/>
+      <xs:element minOccurs="0" name="leadname" type="xs:string"/>
+      <xs:element minOccurs="0" name="name" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getCampusMind">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="getCampusMindResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:campusMind"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="findAllCampusMindResponse">
+    <wsdl:part name="parameters" element="tns:findAllCampusMindResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getCampusMind">
+    <wsdl:part name="parameters" element="tns:getCampusMind">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findAllCampusMind">
+    <wsdl:part name="parameters" element="tns:findAllCampusMind">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getCampusMindResponse">
+    <wsdl:part name="parameters" element="tns:getCampusMindResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="CampusMindWS">
+    <wsdl:operation name="findAllCampusMind">
+      <wsdl:input name="findAllCampusMind" message="tns:findAllCampusMind">
+    </wsdl:input>
+      <wsdl:output name="findAllCampusMindResponse" message="tns:findAllCampusMindResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getCampusMind">
+      <wsdl:input name="getCampusMind" message="tns:getCampusMind">
+    </wsdl:input>
+      <wsdl:output name="getCampusMindResponse" message="tns:getCampusMindResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="CampusMindWSServiceSoapBinding" type="tns:CampusMindWS">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="findAllCampusMind">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="findAllCampusMind">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findAllCampusMindResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getCampusMind">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getCampusMind">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getCampusMindResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="CampusMindWSService">
+    <wsdl:port name="CampusMindWSPort" binding="tns:CampusMindWSServiceSoapBinding">
+      <soap:address location="http://localhost:8010/MuleSoapWebService/services"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

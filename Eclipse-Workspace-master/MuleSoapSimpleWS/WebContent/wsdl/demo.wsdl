@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="DemoService" targetNamespace="http://ws.rocky.gdg.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://ws.rocky.gdg.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+<schema xmlns="http://www.w3.org/2001/XMLSchema">
+  <import namespace="http://ws.rocky.gdg.com/" schemaLocation="demo_schema1.xsd"/>
+</schema>
+  </wsdl:types>
+  <wsdl:message name="returnSum">
+    <wsdl:part name="parameters" element="tns:returnSum">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="returnSumResponse">
+    <wsdl:part name="parameters" element="tns:returnSumResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="returnDivide">
+    <wsdl:part name="parameters" element="tns:returnDivide">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="returnDivideResponse">
+    <wsdl:part name="parameters" element="tns:returnDivideResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="returnMultiplication">
+    <wsdl:part name="parameters" element="tns:returnMultiplication">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="returnSubtraction">
+    <wsdl:part name="parameters" element="tns:returnSubtraction">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="returnMultiplicationResponse">
+    <wsdl:part name="parameters" element="tns:returnMultiplicationResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="returnSubtractionResponse">
+    <wsdl:part name="parameters" element="tns:returnSubtractionResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="Demo">
+    <wsdl:operation name="returnSum">
+      <wsdl:input name="returnSum" message="tns:returnSum">
+    </wsdl:input>
+      <wsdl:output name="returnSumResponse" message="tns:returnSumResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="returnDivide">
+      <wsdl:input name="returnDivide" message="tns:returnDivide">
+    </wsdl:input>
+      <wsdl:output name="returnDivideResponse" message="tns:returnDivideResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="returnMultiplication">
+      <wsdl:input name="returnMultiplication" message="tns:returnMultiplication">
+    </wsdl:input>
+      <wsdl:output name="returnMultiplicationResponse" message="tns:returnMultiplicationResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="returnSubtraction">
+      <wsdl:input name="returnSubtraction" message="tns:returnSubtraction">
+    </wsdl:input>
+      <wsdl:output name="returnSubtractionResponse" message="tns:returnSubtractionResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="DemoServiceSoapBinding" type="tns:Demo">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="returnSum">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="returnSum">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="returnSumResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="returnDivide">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="returnDivide">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="returnDivideResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="returnMultiplication">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="returnMultiplication">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="returnMultiplicationResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="returnSubtraction">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="returnSubtraction">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="returnSubtractionResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="DemoService">
+    <wsdl:port name="DemoPort" binding="tns:DemoServiceSoapBinding">
+      <soap:address location="http://localhost:9090/DemoPort"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

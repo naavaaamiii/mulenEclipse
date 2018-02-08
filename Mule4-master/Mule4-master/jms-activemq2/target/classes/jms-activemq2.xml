@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+    <http:listener-config name="HTTP_Listener_Configuration" host="localhost" port="8081" doc:name="HTTP Listener Configuration"/>
+    <jms:activemq-connector name="Active_MQ" specification="1.1" username="admin" password="admin" brokerURL="tcp://localhost:61616" validateConnections="true" doc:name="Active MQ"/>
+    <jms:activemq-connector name="Active_MQ1" specification="1.1" username="admin" password="admin" brokerURL="tcp://localhost:61616" validateConnections="true" doc:name="Active MQ"/>
+    <jms:activemq-connector name="Active_MQ2" specification="1.1" username="admin" password="admin" brokerURL="tcp://localhost:61616" validateConnections="true" doc:name="Active MQ"/>
+    <jms:activemq-connector name="Active_MQ3" specification="1.1" username="admin" password="admin" brokerURL="tcp://localhost:61616" validateConnections="true" doc:name="Active MQ"/>
+    <flow name="jms-activemq2Flow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/mq" allowedMethods="POST" doc:name="HTTP"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+        <jms:outbound-endpoint queue="TestQueue" connector-ref="Active_MQ" doc:name="JMS"/>
+        <set-payload value="Message is set to Queue of ActiveMQ" doc:name="Set Payload"/>
+    </flow>
+    <flow name="jms-activemq2Flow1">
+        <jms:inbound-endpoint queue="TestQueue" connector-ref="Active_MQ1" doc:name="JMS"/>
+        <file:outbound-endpoint path="src/test/resources/out" responseTimeout="10000" doc:name="File"/>
+    </flow>
+    <flow name="jms-activemq2Flow-using-topic">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/mqtopic" allowedMethods="POST" doc:name="Copy_of_HTTP"/>
+        <object-to-string-transformer doc:name="Copy_of_Object to String"/>
+        <jms:outbound-endpoint topic="TestTopic" connector-ref="Active_MQ" doc:name="Copy_of_JMS"/>
+        <set-payload value="Message is set to Queue of ActiveMQ" doc:name="Copy_of_Set Payload"/>
+    </flow>
+    <flow name="jms-activemq2Flow2">
+        <jms:inbound-endpoint topic="TestTopic" connector-ref="Active_MQ2" doc:name="JMS"/>
+        <file:outbound-endpoint path="src/test/resources/out" responseTimeout="10000" doc:name="File"/>
+    </flow>
+    <flow name="jms-activemq2Flow3">
+        <jms:inbound-endpoint topic="TestTopic" connector-ref="Active_MQ3" doc:name="JMS"/>
+        <file:outbound-endpoint path="src/test/resources/out" responseTimeout="10000" doc:name="File"/>
+    </flow>
+</mule>

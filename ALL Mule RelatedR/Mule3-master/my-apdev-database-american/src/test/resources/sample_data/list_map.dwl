@@ -1,0 +1,14 @@
+%dw 1.0
+%output application/java
+---
+[{
+	code: "????",
+	departureDate: "????",
+	destination: "????",
+	emptySeats: 1,
+	id: 1,
+	origin: "????",
+	planeType: "????",
+	price: 1,
+	totalSeats: 1
+}]

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:ws="http://www.mulesoft.org/schema/mule/ws" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ws http://www.mulesoft.org/schema/mule/ws/current/mule-ws.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+    <http:listener-config name="HTTP_Listener_Configuration" host="localhost" port="8088" doc:name="HTTP Listener Configuration"/>
+    <ws:consumer-config name="Web_Service_Consumer" wsdlLocation="http://ilt.mulesoft-training.com/essentials/delta?wsdl" service="TicketServiceService" port="TicketServicePort" serviceAddress="http://training.cloudhub.io/essentials/delta" doc:name="Web Service Consumer" connectorConfig="HTTP_Request_Configuration1"/>
+    <http:request-config name="HTTP_Request_Configuration" host="172.17.2.218" port="8085" doc:name="HTTP Request Configuration"/>
+    <http:request-config name="HTTP_Request_Configuration1" doc:name="HTTP Request Configuration">
+        <http:proxy host="172.17.2.218" port="8085" username="M1042938" password="Aarya_1998"/>
+    </http:request-config>
+    <flow name="exception-handling-applicationFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/error" allowedMethods="GET" doc:name="HTTP"/>
+        <set-variable variableName="destination" value="#[message.inboundProperties.'http.query.params'.destination]" doc:name="Variable"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/xml
+%namespace ns0 http://soap.training.mulesoft.com/
+---
+{
+	ns0#findFlight: {
+		destination: flowVars.destination as :string
+	}
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <ws:consumer config-ref="Web_Service_Consumer" operation="findFlight" doc:name="Web Service Consumer"/>
+        <json:xml-to-json-transformer doc:name="XML to JSON"/>
+        <catch-exception-strategy doc:name="Catch Exception Strategy">
+            <set-property propertyName="http.status" value="400" doc:name="Property"/>
+            <set-payload value="#['Destination is missing' +'\n'+exception]" doc:name="Set Payload"/>
+        </catch-exception-strategy>
+    </flow>
+    <flow name="exception-handling-applicationFlow1">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/flight" allowedMethods="GET" doc:name="HTTP"/>
+        <set-variable variableName="destination" value="#[message.inboundProperties.'http.query.params'.destination]" doc:name="Variable"/>
+        <dw:transform-message doc:name="Transform Message" metadata:id="38943812-fa5a-49d7-a006-12db36dcfb3b">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/xml
+%namespace ns0 http://soap.training.mulesoft.com/
+---
+{
+	ns0#findFlight: {
+		destination: flowVars.destination as :string
+	}
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <ws:consumer config-ref="Web_Service_Consumer" operation="findFlight" doc:name="Web Service Consumer"/>
+        <json:xml-to-json-transformer doc:name="XML to JSON"/>
+        <choice-exception-strategy doc:name="Choice Exception Strategy">
+            <catch-exception-strategy doc:name="Catch Exception Strategy" when="#[exception.causeMatches('com.mulesoft.weave.*')]">
+                <set-property propertyName="http.status" value="500" doc:name="Property"/>
+                <set-payload value="#['Destination is missing and not able to transform message'+'\n'+exception]" doc:name="Set Payload"/>
+            </catch-exception-strategy>
+            <catch-exception-strategy doc:name="Catch Exception Strategy_AllOtherException">
+                <set-property propertyName="http.status" value="400" doc:name="Property"/>
+                <set-payload value="#['Error while executing flow. Try after sometime'+'\n'+exception]" doc:name="Set Payload"/>
+            </catch-exception-strategy>
+        </choice-exception-strategy>
+    </flow>
+    <flow name="Copy_of_exception-handling-applicationFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/flight1" allowedMethods="GET" doc:name="HTTP"/>
+        <set-variable variableName="destination" value="#[message.inboundProperties.'http.query.params'.destination]" doc:name="Variable"/>
+        <ws:consumer config-ref="Web_Service_Consumer" operation="findFlight" doc:name="Web Service Consumer"/>
+        <json:xml-to-json-transformer doc:name="XML to JSON"/>
+        <choice-exception-strategy doc:name="Copy_of_Choice Exception Strategy">
+            <catch-exception-strategy when="#[exception.causeMatches('com.mulesoft.weave.*')]" doc:name="Copy_of_Catch Exception Strategy">
+                <set-property propertyName="http.status" value="500" doc:name="Copy_of_Property"/>
+                <set-payload value="#['Destination is missing and not able to transform message'+'\n'+exception]" doc:name="Copy_of_Set Payload"/>
+            </catch-exception-strategy>
+            <catch-exception-strategy doc:name="Copy_of_Catch Exception Strategy_AllOtherException">
+                <set-property propertyName="http.status" value="400" doc:name="Copy_of_Property"/>
+                <set-payload value="#['Error while executing flow. Try after sometime'+'\n'+exception]" doc:name="Copy_of_Set Payload"/>
+            </catch-exception-strategy>
+        </choice-exception-strategy>
+    </flow>
+    <flow name="Copy_of_Copy_of_exception-handling-applicationFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/flight2" allowedMethods="GET" doc:name="HTTP"/>
+        <set-variable variableName="destination" value="#[message.inboundProperties.'http.query.params'.destination]" doc:name="Variable"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/xml
+%namespace ns0 http://soap.training.mulesoft.com/
+---
+{
+	ns0#findFlight: {
+		destination: flowVars.destination as :string
+	}
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <ws:consumer config-ref="Web_Service_Consumer" operation="findFlight" doc:name="Web Service Consumer"/>
+        <json:xml-to-json-transformer doc:name="XML to JSON"/>
+        <exception-strategy ref="Choice_Exception_Strategy" doc:name="Reference Exception Strategy"/>
+    </flow>
+    <choice-exception-strategy  name="Choice_Exception_Strategy">
+            <catch-exception-strategy when="#[exception.causeMatches('com.mulesoft.weave.*')]" doc:name="Catch Exception Strategy">
+                <set-property propertyName="http.status" value="500" doc:name="Copy_of_Copy_of_Property"/>
+                <set-payload value="#['Destination is missing and not able to transform message'+'\n'+exception]" doc:name="Copy_of_Copy_of_Set Payload"/>
+            </catch-exception-strategy>
+            <catch-exception-strategy doc:name="Catch Exception Strategy_AllOtherException">
+                <set-property propertyName="http.status" value="400" doc:name="Copy_of_Copy_of_Property"/>
+                <set-payload value="#['Error while executing flow. Try after sometime'+'\n'+exception]" doc:name="Copy_of_Copy_of_Set Payload"/>
+            </catch-exception-strategy>
+        </choice-exception-strategy>
+</mule>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+    <http:listener-config name="HTTP_Listener_Configuration" host="localhost" port="6767" doc:name="HTTP Listener Configuration" basePath="/flight"/>
+    <db:mysql-config name="MySQL_Configuration" host="localhost" port="3306" user="root" password="Welcome123" database="orchard" doc:name="MySQL Configuration"/>
+    <db:mysql-config name="MySQL_Configuration1" host="localhost" port="3306" user="root" password="Welcome123" database="flight" doc:name="MySQL Configuration"/>
+    <db:mysql-config name="MySQL_Configuration2" host="localhost" port="3306" user="root" password="Welcome123" database="flight" doc:name="MySQL Configuration"/>
+    <flow name="getFlightFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/details" allowedMethods="GET" doc:name="HTTP"/>
+        <db:select config-ref="MySQL_Configuration2" doc:name="Database">
+            <db:parameterized-query><![CDATA[select * from flight]]></db:parameterized-query>
+        </db:select>
+        <dw:transform-message doc:name="Transform Message" metadata:id="12efb3ac-3cd4-4087-b91f-c03fe72159e2">
+            <dw:input-payload doc:sample="sample_data\list_map.dwl"/>
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+payload map ((payload01 , indexOfPayload01) -> {
+	ID: payload01.flight_id,
+	code:payload01.flight_name,
+	destination: payload01.flight_location
+})]]></dw:set-payload>
+        </dw:transform-message>
+    </flow>
+    <flow name="getFlightById">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/details/{flight_id} " allowedMethods="GET" doc:name="HTTP"/>
+        <db:select config-ref="MySQL_Configuration2" doc:name="Database">
+            <db:parameterized-query><![CDATA[select * from flight where #[payload.flht]]]></db:parameterized-query>
+        </db:select>
+        <dw:transform-message doc:name="transform Message" metadata:id="12efb3ac-3cd4-4087-b91f-c03fe72159e2">
+            <dw:input-payload doc:sample="sample_data\list_map.dwl"/>
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+payload map ((payload01 , indexOfPayload01) -> {
+	ID: payload01.flight_id,
+	code:payload01.flight_name,
+	destination: payload01.flight_location
+})]]></dw:set-payload>
+        </dw:transform-message>
+    </flow>
+</mule>

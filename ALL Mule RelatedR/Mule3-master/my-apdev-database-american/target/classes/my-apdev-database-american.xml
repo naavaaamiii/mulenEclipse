@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+    <http:listener-config name="HTTP_Listener_Configuration" host="localhost" port="8085" doc:name="HTTP Listener Configuration"/>
+    <db:mysql-config name="MySQL_Configuration" host="localhost" port="3306" user="root" password="Welcome123" database="muleflightdatabase2" doc:name="MySQL Configuration"/>
+    <flow name="my-apdev-database-americanFlow-rawdata">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/flights" allowedMethods="GET" doc:name="HTTP"/>
+        <db:select config-ref="MySQL_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[SELECT *
+FROM american]]></db:parameterized-query>
+        </db:select>
+        <json:object-to-json-transformer doc:name="Object to JSON"/>
+    </flow>
+    <flow name="Copy_of_my-apdev-database-americanFlow-well-structured-jsondata">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/flights2" allowedMethods="GET" doc:name="HTTP"/>
+        <db:select config-ref="MySQL_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[SELECT *
+FROM american]]></db:parameterized-query>
+        </db:select>
+        <dw:transform-message doc:name="Transform Message" metadata:id="d7a61db9-a29e-4a9a-bd6c-dda3b5cf4b29">
+            <dw:input-payload doc:sample="sample_data\list_map.dwl"/>
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+payload map ((payload01 , indexOfPayload01) -> {
+	ID: payload01.id,
+	code: payload01.code,
+	price: payload01.price,
+	departureDate: payload01.departureDate,
+	origin: payload01.origin,
+	destination: payload01.destination,
+	emptySeats: payload01.emptySeats,
+	plane: {
+		type: payload01.planeType,
+		totalSeats: payload01.totalSeats
+	}
+})]]></dw:set-payload>
+        </dw:transform-message>
+    </flow>
+    <flow name="my-apdev-database-americanFlow-jsondata-with-getFlightById-hardcoded-database-query">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/flights3/{ID}" allowedMethods="GET" doc:name="HTTP"/>
+        <db:select config-ref="MySQL_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[SELECT *
+FROM american WHERE id = 1]]></db:parameterized-query>
+        </db:select>
+        <dw:transform-message doc:name="Transform Message" metadata:id="05133e26-c4c5-464f-9333-f5e1f1c58848">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+payload map ((payload01 , indexOfPayload01) -> {
+	ID: payload01.id,
+	code: payload01.code,
+	price: payload01.price,
+	departureDate: payload01.departureDate,
+	origin: payload01.origin,
+	destination: payload01.destination,
+	emptySeats: payload01.emptySeats,
+	plane: {
+		type: payload01.planeType,
+		totalSeats: payload01.totalSeats
+	}
+})]]></dw:set-payload>
+        </dw:transform-message>
+    </flow>
+    <flow name="my-apdev-database-americanFlow-jsondata-getFlightsById-dynamically">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/flights4/{ID}" allowedMethods="GET" doc:name="HTTP"/>
+        <db:select config-ref="MySQL_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[SELECT *
+FROM american
+WHERE id = #[message.inboundProperties.'http.uri.params'.ID]]]></db:parameterized-query>
+        </db:select>
+        <dw:transform-message doc:name="Transform Message" metadata:id="ad2ff0d9-f58a-414a-8c24-9d982f37b07a">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+payload map ((payload01 , indexOfPayload01) -> {
+	ID: payload01.id,
+	code: payload01.code,
+	price: payload01.price,
+	departureDate: payload01.departureDate,
+	origin: payload01.origin,
+	destination: payload01.destination,
+	emptySeats: payload01.emptySeats,
+	plane: {
+		type: payload01.planeType,
+		totalSeats: payload01.totalSeats
+	}
+})]]></dw:set-payload>
+        </dw:transform-message>
+    </flow>
+    <flow name="my-apdev-database-americanFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/flights5" allowedMethods="POST" doc:name="HTTP"/>
+        <set-payload value="{&quot;message&quot;: &quot;Flight added but not really&quot;}" doc:name="Set Payload"/>
+    </flow>
+</mule>

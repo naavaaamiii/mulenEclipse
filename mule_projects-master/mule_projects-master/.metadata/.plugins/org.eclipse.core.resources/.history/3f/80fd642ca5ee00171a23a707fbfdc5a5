@@ -1,0 +1,5 @@
+#Mon Jan 01 08:50:50 IST 2018
+encoding=UTF-8
+domain=default
+redeployment.enabled=true
+config.resources=american-nav.xml

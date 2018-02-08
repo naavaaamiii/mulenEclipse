@@ -1,0 +1,31 @@
+wsdl tels 2 things , what webservervice does and how does it do it
+what ?
+DEFINATION
+types: we define all datatypes using xml schema defination'. types will import all the xsd file wch will contain all the responses that are goin to go from the webservice. it also has req element.
+messsages: analogous to input/output paramters or return types in java or other prog languages .
+
+opertions: method in prog lang
+prototype collection of operation .
+this part is the abstract section and it defines wat a 
+....................................................
+how?
+binding tells wat kind of soap msgs go out at run time , its for web service stack providers like apache cfx, axis.  tells dem how generaated soap service looks like .4 types f literal : document liter , rpc literal , rpc literal wrapped 
+it links abstacts section to actual section
+
+service : this section you tell your client how the particular webservice can be consumed 
+
+
+xmlns:soap : its used to that it is soap envelope
+xmlns:encoding style= its used to define te datattypes used in documents
+
+COMMENT
+ASSIGNMNT 1
+
+top down approach is needed ! .  READ MORE ABOUT CREATING A WSDL 1ST AND THEN SCHEMA FOR IT.
+ASSIGNMENT 2:
+add 
+
+
+
+
+

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+    <http:listener-config name="HTTP_Listener_Configuration" host="localhost" port="8082" doc:name="HTTP Listener Configuration"/>
+    <flow name="apdev-examples-flowsFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/hello" doc:name="HTTP"/>
+        <flow-ref name="subFlow1" doc:name="subFlow1"/>
+        <flow-ref name="subFlow2" doc:name="subFlow2"/>
+        <flow-ref name="flow2" doc:name="flow2"/>
+        <logger message="Name : #[message.outboundProperties.qpname] Type : #[flowVars.qptype] Color : #[sessionVars.color]" level="INFO" doc:name="Logger"/>
+    </flow>
+    <sub-flow name="flow2">
+        <set-payload value="goofBye" doc:name="Set Payload"/>
+        <logger level="INFO" doc:name="Logger"/>
+    </sub-flow>
+    <sub-flow name="subFlow1">
+        <set-payload value="#['Hello World'.toUpperCase()]" doc:name="Set Payload"/>
+        <set-property propertyName="qpname" value="#[message.inboundProperties.'http.query.params'.name]" doc:name="Property"/>
+    </sub-flow>
+    <sub-flow name="subFlow2">
+        <set-variable variableName="qptype" value="#[message.inboundProperties.'http.query.params'.type]" doc:name="Variable"/>
+        <set-session-variable variableName="color" value="prusian blue" doc:name="Session Variable"/>
+    </sub-flow>
+</mule>

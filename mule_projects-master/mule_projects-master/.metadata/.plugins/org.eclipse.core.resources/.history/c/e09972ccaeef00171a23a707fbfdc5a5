@@ -1,0 +1,6 @@
+#** GENERATED CONTENT ** Mule Application Deployment Descriptor
+#Tue Jan 02 16:46:35 IST 2018
+redeployment.enabled=true
+encoding=UTF-8
+config.resources=apdev-flights-ws.xml
+domain=default

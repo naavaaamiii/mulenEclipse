@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:ws="http://www.mulesoft.org/schema/mule/ws" xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ws http://www.mulesoft.org/schema/mule/ws/current/mule-ws.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+    <http:listener-config name="HTTP_Listener_Configuration" host="localhost" port="8081" doc:name="HTTP Listener Configuration"/>
+    <ws:consumer-config name="Web_Service_Consumer" wsdlLocation="http://localhost:1234/Soap/Hello?wsdl" service="HelloService" port="HelloPort" serviceAddress="http://localhost:1234/Soap/Hello" doc:name="Web Service Consumer"/>
+    <http:listener-config name="HTTP_Listener_Configuration1" host="localhost" port="8082" doc:name="HTTP Listener Configuration"/>
+    <ws:consumer-config name="Web_Service_Consumer1" wsdlLocation="http://localhost:1234/Soap/Hello?wsdl" service="HelloService" port="HelloPort" serviceAddress="http://localhost:1234/Soap/Hello" doc:name="Web Service Consumer"/>
+    <flow name="consuming-myown-soap-wsFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/soapclient" doc:name="HTTP"/>
+        <set-variable variableName="firstnum" value="#[message.inboundProperties.'http.query.params'.fnum]" doc:name="Variable"/>
+        <set-variable variableName="secondnum" value="#[message.inboundProperties.'http.query.params'.snum]" doc:name="Variable"/>
+        <ws:consumer config-ref="Web_Service_Consumer" operation="sum" doc:name="Web Service Consumer"/>
+    </flow>
+    <flow name="consuming-myown-soap-wsFlow1">
+        <http:listener config-ref="HTTP_Listener_Configuration1" path="/soapclient2" doc:name="HTTP"/>
+        <set-variable variableName="fnum" value="#[message.inboundProperties.'http.query.params'.fnum]" doc:name="Variable"/>
+        <set-variable variableName="snum" value="#[message.inboundProperties.'http.query.params'.snum]" doc:name="Variable"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/xml
+%namespace ns0 http://ws.rocky.gdg.com/
+---
+{
+	ns0#sum: {
+		arg0: flowVars.fnum as :number,
+		arg1: flowVars.snum as :number
+	}
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <ws:consumer config-ref="Web_Service_Consumer1" operation="sum" doc:name="Web Service Consumer"/>
+        <dw:transform-message doc:name="Transform Message" metadata:id="8d4de851-608f-488d-979d-b8a1f09bb94e">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/java
+%namespace ns0 http://ws.rocky.gdg.com/
+---
+payload.ns0#sumResponse.return]]></dw:set-payload>
+        </dw:transform-message>
+        <logger message="#[payload]" level="INFO" doc:name="Logger"/>
+    </flow>
+</mule>

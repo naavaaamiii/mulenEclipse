@@ -1,0 +1,4 @@
+authenticated.users=[{"token"\:"5e28238a-9521-4704-a8a6-a416cc17a080","userId"\:"shubham8","refreshToken"\:"","baseUrl"\:"https\://anypoint.mulesoft.com/"},{"token"\:"5c5baafc-fd4a-40de-bd9c-b99752e40274","userId"\:"Navmi","refreshToken"\:"","baseUrl"\:"https\://anypoint.mulesoft.com/"}]
+current.token=5e28238a-9521-4704-a8a6-a416cc17a080
+current.user=shubham8
+eclipse.preferences.version=1

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+    <http:listener-config name="HTTP_Listener_Configuration" host="localhost" port="8081" doc:name="HTTP Listener Configuration"/>
+    <db:mysql-config name="MySQL_Configuration" host="localhost" port="3306" user="root" password="Welcome123" database="rollbackdatabase" doc:name="MySQL Configuration"/>
+    <db:mysql-config name="MySQL_Configuration1" host="localhost" port="3306" user="root" password="Welcome123" database="rollbackdatabase" doc:name="MySQL Configuration"/>
+    <flow name="rollback-exception-stratergyFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/db" allowedMethods="POST" doc:name="HTTP"/>
+        <db:stored-procedure config-ref="MySQL_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[{Call p_InsertPopulation(:Country,:Year,:TotalPopulation)}]]></db:parameterized-query>
+            <db:in-param name="Country" value="#[json:Country]"/>
+            <db:in-param name="Year" value="#[json:Year]"/>
+            <db:in-param name="TotalPopulation" value="#[json:TotalPopulation]"/>
+        </db:stored-procedure>
+        <set-payload value="#['Data Inserted']" doc:name="Set Payload"/>
+    </flow>
+    <flow name="rollback-exception-stratergyFlow1">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/db2" allowedMethods="POST" doc:name="HTTP"/>
+        <db:insert config-ref="MySQL_Configuration1" doc:name="Database">
+            <db:parameterized-query><![CDATA[INSERT INTO info VALUES (#[json:id], 
+#[json:Country], #[json:Year], #[json:TotalPopulation])]]></db:parameterized-query>
+        </db:insert>
+        <logger message="[#[json:id], #[json:Country]]" level="INFO" doc:name="Logger"/>
+        <set-payload value="#['Data Inserted']" doc:name="Set Payload"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <rollback-exception-strategy maxRedeliveryAttempts="5" doc:name="Rollback Exception Strategy">
+            <logger message="Transaction rollback" level="INFO" doc:name="Logger"/>
+            <set-payload value="#['Transaction rollBack']" doc:name="Set Payload"/>
+            <on-redelivery-attempts-exceeded>
+                <logger message="RolledBacked" level="INFO" doc:name="Logger"/>
+            </on-redelivery-attempts-exceeded>
+        </rollback-exception-strategy>
+    </flow>
+</mule>

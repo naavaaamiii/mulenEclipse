@@ -1,0 +1,41 @@
+#%RAML 1.0
+baseUri: https://mocksvc.mulesoft.com/mocks/d52234da-e118-4407-82aa-19ed4e3bf272 # 
+title: American Flight Specification 
+version: 1.0
+
+/flights:
+ get:
+  queryParameters: 
+    code:
+  responses:
+      200:
+       body:
+        application/json:
+         example: |
+          {
+            "id":"m1043073", "name":"shubham","flightname":"5000"
+            }
+        
+          
+
+ post:
+  body:
+   application/json:
+     example: |
+       { "id": "574","price": 399,"departureDate": "2016/12/20","origin":"ORD","destination":"SFO","emptySeats": 200,"plane": {"type": "Boeing 747", "totalSeats": 400}}
+  responses: 
+    201:
+     body:
+      application/json:
+       example: |
+        {"message": "flight added but not really "}
+
+/{ID}:
+ get:
+  responses: 
+    200:
+     body:
+      application/json:
+       example: |
+        { "code": "GQ574","price": 399,"departureDate": "2016/12/20", "origin": "ORD,destination:SFO","emptySeats": 200,"plane": {"type": "Boeing 747", "totalSeats": 400}}
+

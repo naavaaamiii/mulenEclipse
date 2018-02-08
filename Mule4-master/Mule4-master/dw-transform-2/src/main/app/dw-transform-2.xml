@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+    
+    <configuration doc:name="configuration1">
+    	<expression-language>
+    		<global-functions>
+    			def tolower(name)
+    			{
+    				return name.toLowerCase()
+    			}
+    		</global-functions>
+    	</expression-language>
+    </configuration>
+    
+    <http:listener-config name="HTTP_Listener_Configuration" host="localhost" port="8081" doc:name="HTTP Listener Configuration"/>
+    <flow name="dw-transform-2Flow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/dw3" allowedMethods="POST" doc:name="HTTP"/>
+        <dw:transform-message doc:name="Transform Message" metadata:id="3f891b3e-ce00-425e-84c8-9068746f2f80">
+            <dw:input-payload mimeType="application/json"/>
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+	Name: tolower(payload.FirstName)++ ' ' ++ tolower(payload.LastName),
+	Age: payload.Age,
+	Position: payload.Designation
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <file:outbound-endpoint path="src/test/resources/out" responseTimeout="10000" doc:name="File"/>
+    </flow>
+    <flow name="dw-transform-2Flow-currency-calculator">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/dw4" allowedMethods="POST" doc:name="HTTP"/>
+        <dw:transform-message doc:name="Transform Message" metadata:id="3f891b3e-ce00-425e-84c8-9068746f2f80">
+            <dw:input-payload mimeType="application/json"/>
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+	Currency: payload.Currency,
+	ExchangeRate: payload.ExchangeRate,
+	Country: {
+		Country: "USA"
+	}
+	when payload.Currency == "USD"
+	otherwise
+	{
+		Country: "UK"
+	}
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <file:outbound-endpoint path="src/test/resources/out2" responseTimeout="10000" doc:name="File"/>
+    </flow>
+</mule>

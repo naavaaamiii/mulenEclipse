@@ -1,0 +1,15 @@
+INDEX VERSION 1.127+C:\Users\M1043093\AnypointStudio\workspace\.metadata\.plugins\org.eclipse.jdt.core
+1380603252.index
+1272131415.index
+2939003350.index
+1757691222.index
+727045088.index
+1545533187.index
+602150982.index
+106774426.index
+2864242304.index
+72507177.index
+669851622.index
+2328269416.index
+3795281284.index
+4257325822.index

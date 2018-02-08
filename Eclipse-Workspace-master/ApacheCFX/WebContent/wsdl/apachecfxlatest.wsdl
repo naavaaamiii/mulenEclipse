@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="ApacheCfxLatestService" targetNamespace="http://classes.rocky.gdg.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://classes.rocky.gdg.com/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xs:schema elementFormDefault="unqualified" targetNamespace="http://classes.rocky.gdg.com/" version="1.0" xmlns:tns="http://classes.rocky.gdg.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="append" type="tns:append"/>
+
+  <xs:element name="appendResponse" type="tns:appendResponse"/>
+
+  <xs:element name="sum" type="tns:sum"/>
+
+  <xs:element name="sumResponse" type="tns:sumResponse"/>
+
+  <xs:complexType name="sum">
+    <xs:sequence>
+      <xs:element name="arg0" type="xs:int"/>
+      <xs:element name="arg1" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="sumResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="append">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg1" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="appendResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="sum">
+    <wsdl:part name="parameters" element="tns:sum">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="sumResponse">
+    <wsdl:part name="parameters" element="tns:sumResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="append">
+    <wsdl:part name="parameters" element="tns:append">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="appendResponse">
+    <wsdl:part name="parameters" element="tns:appendResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="ApacheCfxLatest">
+    <wsdl:operation name="sum">
+      <wsdl:input name="sum" message="tns:sum">
+    </wsdl:input>
+      <wsdl:output name="sumResponse" message="tns:sumResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="append">
+      <wsdl:input name="append" message="tns:append">
+    </wsdl:input>
+      <wsdl:output name="appendResponse" message="tns:appendResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ApacheCfxLatestServiceSoapBinding" type="tns:ApacheCfxLatest">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="sum">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="sum">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="sumResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="append">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="append">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="appendResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ApacheCfxLatestService">
+    <wsdl:port name="ApacheCfxLatestPort" binding="tns:ApacheCfxLatestServiceSoapBinding">
+      <soap:address location="http://localhost:8010/ApacheCFX/services/ApacheCfxLatestPort"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

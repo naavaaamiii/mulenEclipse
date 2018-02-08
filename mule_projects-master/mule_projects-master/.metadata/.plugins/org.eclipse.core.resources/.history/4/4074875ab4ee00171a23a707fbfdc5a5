@@ -1,0 +1,7 @@
+http.port=8081
+
+db.host =http://localhost:3306
+db.port = 3306
+db.user = root
+db.password = Welcome123
+db.database = flight

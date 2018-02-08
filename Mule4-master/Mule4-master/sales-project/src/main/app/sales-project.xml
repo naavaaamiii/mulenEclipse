@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:smtp="http://www.mulesoft.org/schema/mule/smtp" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd">
+    <http:listener-config name="HTTP_Listener_Configuration" host="localhost" port="8081" doc:name="HTTP Listener Configuration"/>
+    <smtp:gmail-connector name="Gmail" validateConnections="true" doc:name="Gmail"/>
+    <flow name="sales-projectFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/sales" doc:name="HTTP"/>
+        <logger message="#[message.inboundProperties.'http.request.uri']" level="INFO" doc:name="Before Filter"/>
+        <expression-filter expression="#[message.inboundProperties.'http.query.string'.contains(&quot;sales=&quot;)]" doc:name="Expression"/>
+        <logger message="#[message.inboundProperties.'http.query.params']" level="INFO" doc:name="After Filter"/>
+        <set-variable variableName="sales" value="#[message.inboundProperties.'http.query.params'.sales]" doc:name="Set Sales Person"/>
+        <flow-ref name="sales-flow" doc:name="Flow Reference"/>
+    </flow>
+    <flow name="sales-flow">
+        <choice doc:name="Choice">
+            <when expression="#[flowVars.sales == 'Mahesha']">
+                <expression-component doc:name="Sales From Mahesha"><![CDATA[java.util.AbstractList sourceA = new java.util.ArrayList();
+
+java.util.Map firstProduct = new java.util.HashMap();
+
+firstProduct.put("ProductId", "1");
+firstProduct.put("ProductName", "Tarunlamborghini");
+firstProduct.put("Quantity", "40");
+firstProduct.put("Price", "500");
+
+java.util.Map secondProduct = new java.util.HashMap();
+
+secondProduct.put("ProductId", "2");
+secondProduct.put("ProductName", "MaheshFerrari");
+secondProduct.put("Quantity", "30");
+secondProduct.put("Price", "1000");
+
+sourceA.add(firstProduct);
+sourceA.add(secondProduct);]]></expression-component>
+            </when>
+            <when expression="#[flowVars.sales == 'Tarun']">
+                <expression-component doc:name="Sales From Tarun"><![CDATA[java.util.AbstractList sourceA = new java.util.ArrayList();
+
+java.util.Map firstProduct = new java.util.HashMap();
+
+firstProduct.put("ProductId", "3");
+firstProduct.put("ProductName", "AkshuPorsche");
+firstProduct.put("Quantity", "500");
+firstProduct.put("Price", "800");
+
+java.util.Map secondProduct = new java.util.HashMap();
+
+secondProduct.put("ProductId", "4");
+secondProduct.put("ProductName", "GirijaAudi");
+secondProduct.put("Quantity", "30");
+secondProduct.put("Price", "1000");
+
+sourceA.add(firstProduct);
+sourceA.add(secondProduct);]]></expression-component>
+            </when>
+            <otherwise>
+                <expression-component doc:name="Expression"/>
+            </otherwise>
+        </choice>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/java
+---
+{
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <object-to-string-transformer doc:name="Object to String"/>
+        <flow-ref name="sendEmail" doc:name="Flow Reference"/>
+    </flow>
+    <flow name="sendEmail">
+        <set-attachment attachmentName="aggregation-report" value="#[payload]" contentType="text/plain" doc:name="Attachment"/>
+        <logger message="Attachment is attatched" level="INFO" doc:name="Logger"/>
+        <set-payload value="This are the total sales of #[flowVars.sales]" doc:name="Set Payload"/>
+        <smtp:outbound-endpoint host="localhost" user="amendraman@gmail.com" password="manoj0624" connector-ref="Gmail" to="amansingh0624@gmail.com" from="amendraman@gmail.com" subject="Rocky" responseTimeout="10000" doc:name="SMTP"/>
+    </flow>
+</mule>

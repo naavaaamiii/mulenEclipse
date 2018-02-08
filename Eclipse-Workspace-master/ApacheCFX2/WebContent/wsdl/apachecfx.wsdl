@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="ApachecfxService" targetNamespace="http://cfx2.rocky.gdg.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://cfx2.rocky.gdg.com/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xs:schema elementFormDefault="unqualified" targetNamespace="http://cfx2.rocky.gdg.com/" version="1.0" xmlns:tns="http://cfx2.rocky.gdg.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="myString" type="tns:myString"/>
+
+  <xs:element name="myStringResponse" type="tns:myStringResponse"/>
+
+  <xs:complexType name="myString">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="myStringResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="myStringResponse">
+    <wsdl:part name="parameters" element="tns:myStringResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="myString">
+    <wsdl:part name="parameters" element="tns:myString">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="Apachecfx">
+    <wsdl:operation name="myString">
+      <wsdl:input name="myString" message="tns:myString">
+    </wsdl:input>
+      <wsdl:output name="myStringResponse" message="tns:myStringResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ApachecfxServiceSoapBinding" type="tns:Apachecfx">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="myString">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="myString">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="myStringResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ApachecfxService">
+    <wsdl:port name="ApachecfxPort" binding="tns:ApachecfxServiceSoapBinding">
+      <soap:address location="http://localhost:8016/ApacheCFX2/services/ApachecfxPort"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

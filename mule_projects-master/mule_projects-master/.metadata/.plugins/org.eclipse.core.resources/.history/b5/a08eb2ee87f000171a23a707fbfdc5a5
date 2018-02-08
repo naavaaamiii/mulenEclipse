@@ -1,0 +1,6 @@
+#** GENERATED CONTENT ** Mule Application Deployment Descriptor
+#Wed Jan 03 14:48:34 IST 2018
+redeployment.enabled=true
+encoding=UTF-8
+config.resources=american-nav.xml,implementation.xml
+domain=default

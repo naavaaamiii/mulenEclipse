@@ -1,0 +1,5 @@
+#Tue Jan 02 16:01:06 IST 2018
+encoding=UTF-8
+domain=default
+redeployment.enabled=true
+config.resources=raml1.xml

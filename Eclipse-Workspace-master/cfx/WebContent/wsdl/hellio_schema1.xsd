@@ -1,0 +1,17 @@
+<xs:schema xmlns:tns="http://hi/" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified" targetNamespace="http://hi/" version="1.0">
+
+  <xs:element name="hi" type="tns:hi"/>
+
+  <xs:element name="hiResponse" type="tns:hiResponse"/>
+
+  <xs:complexType name="hi">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="hiResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>

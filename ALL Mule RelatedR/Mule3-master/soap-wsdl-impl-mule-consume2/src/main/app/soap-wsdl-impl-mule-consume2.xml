@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:ws="http://www.mulesoft.org/schema/mule/ws" xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ws http://www.mulesoft.org/schema/mule/ws/current/mule-ws.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+    <http:listener-config name="HTTP_Listener_Configuration" host="localhost" port="8092" doc:name="HTTP Listener Configuration"/>
+    <ws:consumer-config name="Web_Service_Consumer" wsdlLocation="http://localhost:8091/result?wsdl" service="ServiceService" port="ServicePort" serviceAddress="http://localhost:8091/result" doc:name="Web Service Consumer"/>
+    <flow name="soap-wsdl-impl-mule-consume2Flow-getAllLeads">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/output/getAllLeads" allowedMethods="GET" doc:name="HTTP"/>
+        <ws:consumer config-ref="Web_Service_Consumer" operation="getAllLeads" doc:name="Web Service Consumer"/>
+        <dw:transform-message doc:name="Transform Message" metadata:id="882c0e83-6052-4c39-8e27-8674c39be5c0">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/xml
+%namespace ns0 http://orchard.rocky.gdg.com/
+---
+{
+	ns0#getAllLeadsResponse: {
+		(payload.ns0#getAllLeadsResponse.*return map ((return , indexOfReturn) -> {
+			return: {
+				leadid: return.leadid,
+				leadname: return.leadname,
+				leadtrack: return.leadtrack
+			}
+		}))
+	}
+}]]></dw:set-payload>
+        </dw:transform-message>
+    </flow>
+    <flow name="soap-wsdl-impl-mule-consume2-getAllMinds">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/output/getAllMinds" allowedMethods="GET" doc:name="HTTP"/>
+        <ws:consumer config-ref="Web_Service_Consumer" operation="getAllMinds" doc:name="Web Service Consumer"/>
+        <dw:transform-message doc:name="Transform Message" metadata:id="8218c75c-820f-489f-b68b-0a3a6cf0d6f5">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/xml
+%namespace ns0 http://orchard.rocky.gdg.com/
+---
+{
+	ns0#getAllMindsResponse: {
+		(payload.ns0#getAllMindsResponse.*return map ((return , indexOfReturn) -> {
+			return: {
+				mindid: return.mindid,
+				mindname: return.mindname,
+				track: return.track
+			}
+		}))
+	}
+}]]></dw:set-payload>
+        </dw:transform-message>
+    </flow>
+    <flow name="soap-wsdl-impl-mule-consume2-getAllTrack">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/output/getAllTrack" allowedMethods="GET" doc:name="HTTP"/>
+        <ws:consumer config-ref="Web_Service_Consumer" operation="getAllTrack" doc:name="Web Service Consumer"/>
+        <dw:transform-message doc:name="Transform Message" metadata:id="2212d85f-d433-4f7c-b074-b2ca61c59b27">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/xml
+%namespace ns0 http://orchard.rocky.gdg.com/
+---
+{
+	ns0#getAllTrackResponse: {
+		(payload.ns0#getAllTrackResponse.*return map ((return , indexOfReturn) -> {
+			return: {
+				track: return.track,
+				trackid: return.trackid
+			}
+		}))
+	}
+}]]></dw:set-payload>
+        </dw:transform-message>
+    </flow>
+    <flow name="soap-wsdl-impl-mule-consume2Flow2">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/output/getMindById/{id}" allowedMethods="GET" doc:name="HTTP"/>
+        <set-variable variableName="id" value="#[message.inboundProperties.'http.query.params'.id]" doc:name="Variable"/>
+        <ws:consumer config-ref="Web_Service_Consumer" operation="getMindById" doc:name="Web Service Consumer"/>
+        <dw:transform-message doc:name="Transform Message" metadata:id="c7a2636e-9223-48d9-965d-abd7dde9c633">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/xml
+%namespace ns0 http://orchard.rocky.gdg.com/
+---
+{
+	ns0#getMindByIdResponse: {
+		return: {
+			mindid: payload.ns0#getMindByIdResponse.return.mindid,
+			mindname: payload.ns0#getMindByIdResponse.return.mindname,
+			track: payload.ns0#getMindByIdResponse.return.track
+		}
+	}
+}]]></dw:set-payload>
+        </dw:transform-message>
+    </flow>
+</mule>

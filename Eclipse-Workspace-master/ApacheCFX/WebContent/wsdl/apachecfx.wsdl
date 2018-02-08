@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="ApacheCfxService" targetNamespace="http://classes.rocky.gdg.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://classes.rocky.gdg.com/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xs:schema elementFormDefault="unqualified" targetNamespace="http://classes.rocky.gdg.com/" version="1.0" xmlns:tns="http://classes.rocky.gdg.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="myString" type="tns:myString"/>
+
+  <xs:element name="myStringResponse" type="tns:myStringResponse"/>
+
+  <xs:element name="number" type="tns:number"/>
+
+  <xs:element name="numberResponse" type="tns:numberResponse"/>
+
+  <xs:complexType name="myString">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="myStringResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="number">
+    <xs:sequence>
+      <xs:element name="arg0" type="xs:int"/>
+      <xs:element name="arg1" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="numberResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="numberResponse">
+    <wsdl:part name="parameters" element="tns:numberResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="myString">
+    <wsdl:part name="parameters" element="tns:myString">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="number">
+    <wsdl:part name="parameters" element="tns:number">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="myStringResponse">
+    <wsdl:part name="parameters" element="tns:myStringResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="ApacheCfx">
+    <wsdl:operation name="myString">
+      <wsdl:input name="myString" message="tns:myString">
+    </wsdl:input>
+      <wsdl:output name="myStringResponse" message="tns:myStringResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="number">
+      <wsdl:input name="number" message="tns:number">
+    </wsdl:input>
+      <wsdl:output name="numberResponse" message="tns:numberResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ApacheCfxServiceSoapBinding" type="tns:ApacheCfx">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="myString">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="myString">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="myStringResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="number">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="number">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="numberResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ApacheCfxService">
+    <wsdl:port name="ApacheCfxPort" binding="tns:ApacheCfxServiceSoapBinding">
+      <soap:address location="http://localhost:8010/ApacheCFX/services"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
